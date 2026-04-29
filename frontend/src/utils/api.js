@@ -3,19 +3,31 @@ import axios from 'axios';
 const LOCAL_API_URL = 'http://localhost:5000/api';
 const PRODUCTION_API_URL = 'https://taskmanageretharaai-production.up.railway.app/api';
 
+const normalizeApiUrl = (url) => {
+  if (!url) return '';
+
+  const trimmedUrl = url.trim().replace(/\/$/, '');
+
+  if (/^https?:\/\//i.test(trimmedUrl) || trimmedUrl.startsWith('/')) {
+    return trimmedUrl;
+  }
+
+  return `https://${trimmedUrl}`;
+};
+
 const resolveApiBaseUrl = () => {
   if (process.env.REACT_APP_API_URL) {
-    return process.env.REACT_APP_API_URL.replace(/\/$/, '');
+    return normalizeApiUrl(process.env.REACT_APP_API_URL);
   }
 
   if (
     typeof window !== 'undefined' &&
     ['localhost', '127.0.0.1'].includes(window.location.hostname)
   ) {
-    return LOCAL_API_URL;
+    return normalizeApiUrl(LOCAL_API_URL);
   }
 
-  return PRODUCTION_API_URL;
+  return normalizeApiUrl(PRODUCTION_API_URL);
 };
 
 const API = axios.create({
