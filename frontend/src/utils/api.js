@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+const LOCAL_API_URL = 'http://localhost:5000/api';
+const PRODUCTION_API_URL = 'https://taskmanageretharaai-production.up.railway.app/api';
+
 const resolveApiBaseUrl = () => {
   if (process.env.REACT_APP_API_URL) {
     return process.env.REACT_APP_API_URL.replace(/\/$/, '');
@@ -9,10 +12,10 @@ const resolveApiBaseUrl = () => {
     typeof window !== 'undefined' &&
     ['localhost', '127.0.0.1'].includes(window.location.hostname)
   ) {
-    return 'http://localhost:5000/api';
+    return LOCAL_API_URL;
   }
 
-  return '/api';
+  return PRODUCTION_API_URL;
 };
 
 const API = axios.create({
